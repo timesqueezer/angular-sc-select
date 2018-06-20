@@ -236,6 +236,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    vm.currentPage = 1;
 	    vm.canToggleAll = vm.multiple && !vm.multipleLimit && !vm.pageLimit;
 
+	    vm.multiple = $attrs.multiple;
+
 	    var selectElm = _angular2.default.element(template);
 	    if (vm.multiple) {
 	      selectElm.find('ui-select').attr('multiple', 'multiple');
@@ -249,32 +251,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    vm.searchItems = function () {
 	      if (vm.uiSelectCtrl) {
-	        var _ret = function () {
-	          //reset page if the search text has changed
-	          if (oldSearchText !== vm.uiSelectCtrl.search) {
-	            vm.currentPage = 1;
-	          }
+	        //reset page if the search text has changed
+	        if (oldSearchText !== vm.uiSelectCtrl.search) {
+	          vm.currentPage = 1;
+	        }
 
-	          oldSearchText = vm.uiSelectCtrl.search;
-	          var setLoadingTimeout = $timeout(function () {
-	            vm.loading = true;
-	            vm.items = [];
-	          }, loadingDelay);
+	        oldSearchText = vm.uiSelectCtrl.search;
+	        var setLoadingTimeout = $timeout(function () {
+	          vm.loading = true;
+	          vm.items = [];
+	        }, loadingDelay);
 
-	          return {
-	            v: $q.when(vm.parsedOptions.source(vm.optionScope, {
-	              page: vm.currentPage,
-	              searchText: vm.uiSelectCtrl.search
-	            })).then(function (items) {
-	              vm.items = items;
-	            }).finally(function () {
-	              vm.loading = false;
-	              $timeout.cancel(setLoadingTimeout);
-	            })
-	          };
-	        }();
-
-	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	        return $q.when(vm.parsedOptions.source(vm.optionScope, {
+	          page: vm.currentPage,
+	          searchText: vm.uiSelectCtrl.search
+	        })).then(function (items) {
+	          vm.items = items;
+	        }).finally(function () {
+	          vm.loading = false;
+	          $timeout.cancel(setLoadingTimeout);
+	        });
 	      }
 	    };
 
@@ -410,12 +406,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (_angular2.default.isUndefined(vm.groupBy) && _angular2.default.isDefined($attrs.groupBy)) {
-	      (function () {
-	        var getGroupBy = $parse($attrs.groupBy);
-	        vm.groupBy = function (item) {
-	          return getGroupBy(item);
-	        };
-	      })();
+	      var getGroupBy = $parse($attrs.groupBy);
+	      vm.groupBy = function (item) {
+	        return getGroupBy(item);
+	      };
 	    }
 	  }
 	}
