@@ -82,6 +82,8 @@ export default function scSelect() {
     vm.currentPage = 1;
     vm.canToggleAll = vm.multiple && !vm.multipleLimit && !vm.pageLimit;
 
+    vm.multiple = $attrs.multiple;
+
     const selectElm = angular.element(template);
     if (vm.multiple) {
       selectElm.find('ui-select').attr('multiple', 'multiple');
